@@ -14,10 +14,8 @@ import imgHomework   from '../assets/task_images/study_time.png'
 import imgCleanToys  from '../assets/task_images/toys_clean_up.png'
 // Uncomment as missing PNGs are added to src/assets/task_images/:
 // import imgWashFace   from '../assets/task_images/wash_face.png'
-// import imgPackBag    from '../assets/task_images/pack_bag.png'
+import imgPackBag    from '../assets/task_images/pack_bag.png'
 // import imgDrinkWater from '../assets/task_images/drink_water.png'
-// import imgEatLunch   from '../assets/task_images/eat_lunch.png'
-// import imgEatDinner  from '../assets/task_images/eat_dinner.png'
 // import imgExercise   from '../assets/task_images/exercise.png'
 // import imgBrushHair  from '../assets/task_images/brush_hair.png'
 // import imgMakeBed    from '../assets/task_images/make_bed.png'
@@ -41,10 +39,10 @@ const IMAGE_MAP = {
   'clean-up-toys':  imgCleanToys,
   // Uncomment as missing PNGs are added:
   // 'wash-face':   imgWashFace,
-  // 'pack-bag':    imgPackBag,
+  'pack-bag':    imgPackBag,
+  'eat-lunch':   imgBreakfast,
+  'eat-dinner':  imgBreakfast,
   // 'drink-water': imgDrinkWater,
-  // 'eat-lunch':   imgEatLunch,
-  // 'eat-dinner':  imgEatDinner,
   // 'exercise':    imgExercise,
   // 'brush-hair':  imgBrushHair,
   // 'make-bed':    imgMakeBed,
