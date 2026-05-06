@@ -230,8 +230,10 @@ export default function RoutineView({
 
         {/* Kid identity — centered, mobile only */}
         <div className="lg:hidden flex flex-col items-center pt-5 pb-2">
-          <span className="text-6xl">{kid.avatar}</span>
-          <span className="font-bold text-2xl text-gray-900 tracking-tight mt-2">{kid.name}</span>
+          <div className="flex items-center gap-3">
+            <span className="text-5xl">{kid.avatar}</span>
+            <span className="font-bold text-2xl text-gray-900 tracking-tight">{kid.name}</span>
+          </div>
           {kid.totalStars > 0 && (
             <span className="text-sm text-gray-400 mt-1">⭐ {kid.totalStars}</span>
           )}
