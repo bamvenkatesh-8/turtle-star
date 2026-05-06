@@ -1,6 +1,15 @@
 import { useState, useRef } from 'react'
 import TaskCard from './TaskCard'
 
+function getVisibleDotIndices(total, current, max = 5) {
+  if (total <= max) return Array.from({ length: total }, (_, i) => i)
+  const half = Math.floor(max / 2)
+  let start = current - half
+  if (start < 0) start = 0
+  if (start + max > total) start = total - max
+  return Array.from({ length: max }, (_, i) => start + i)
+}
+
 export default function TaskCardSwipeView({ tasks, completedIds, onToggle, theme }) {
   const [currentIndex, setCurrentIndex] = useState(0)
   const accentColor = theme?.accentColor || '#007AFF'
@@ -10,7 +19,6 @@ export default function TaskCardSwipeView({ tasks, completedIds, onToggle, theme
     if (i >= 0 && i < tasks.length) setCurrentIndex(i)
   }
 
-  // Pointer-based swipe
   function onPointerDown(e) {
     dragStart.current = e.clientX
   }
@@ -24,6 +32,8 @@ export default function TaskCardSwipeView({ tasks, completedIds, onToggle, theme
 
   if (!tasks.length) return null
 
+  const visibleDots = getVisibleDotIndices(tasks.length, currentIndex)
+
   return (
     <div className="flex-1 flex flex-col px-4 pt-4 pb-2 overflow-hidden bg-gray-50">
       <div className="flex-1 flex flex-col items-center justify-center">
@@ -31,6 +41,7 @@ export default function TaskCardSwipeView({ tasks, completedIds, onToggle, theme
         {/* CSS carousel — all cards in a flex row, container clips overflow */}
         <div
           className="w-full max-w-sm lg:max-w-lg overflow-hidden rounded-2xl select-none cursor-grab active:cursor-grabbing"
+          style={{ touchAction: 'none' }}
           onPointerDown={onPointerDown}
           onPointerUp={onPointerUp}
         >
@@ -51,7 +62,7 @@ export default function TaskCardSwipeView({ tasks, completedIds, onToggle, theme
           </div>
         </div>
 
-        {/* Nav arrows + dots */}
+        {/* Nav arrows + dots (max 5 dots in sliding window) */}
         <div className="flex items-center justify-between w-full max-w-sm lg:max-w-lg mt-4">
           <button
             onClick={() => goTo(currentIndex - 1)}
@@ -62,7 +73,7 @@ export default function TaskCardSwipeView({ tasks, completedIds, onToggle, theme
           </button>
 
           <div className="flex gap-2 items-center">
-            {tasks.map((t, i) => (
+            {visibleDots.map((i) => (
               <button
                 key={i}
                 onClick={() => goTo(i)}
