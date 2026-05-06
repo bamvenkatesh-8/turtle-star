@@ -79,14 +79,6 @@ export default function RoutineView({
             </div>
           }
         />
-        {/* Kid name row — below header, uncluttered */}
-        <div className="bg-white border-b border-gray-100 px-4 py-2.5 flex items-center gap-2.5">
-          <span className="text-2xl">{kid.avatar}</span>
-          <span className="font-semibold text-gray-900 text-base tracking-tight">{kid.name}</span>
-          {kid.totalStars > 0 && (
-            <span className="ml-auto text-sm text-gray-400">⭐ {kid.totalStars}</span>
-          )}
-        </div>
       </div>
 
       {/* DESKTOP SIDEBAR */}
@@ -236,13 +228,22 @@ export default function RoutineView({
           </div>
         </div>
 
-        <ProgressBar completed={completedCount} total={filteredTasks.length} theme={theme} />
+        {/* Kid identity — centered, mobile only */}
+        <div className="lg:hidden flex flex-col items-center pt-5 pb-2">
+          <span className="text-6xl">{kid.avatar}</span>
+          <span className="font-bold text-2xl text-gray-900 tracking-tight mt-2">{kid.name}</span>
+          {kid.totalStars > 0 && (
+            <span className="text-sm text-gray-400 mt-1">⭐ {kid.totalStars}</span>
+          )}
+        </div>
 
         {viewMode === 'list' ? (
           <TaskListView tasks={filteredTasks} completedIds={allCompletedIds} onToggle={handleToggle} theme={theme} />
         ) : (
           <TaskCardSwipeView tasks={filteredTasks} completedIds={allCompletedIds} onToggle={handleToggle} theme={theme} />
         )}
+
+        <ProgressBar completed={completedCount} total={filteredTasks.length} theme={theme} />
       </div>
     </div>
   )
