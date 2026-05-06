@@ -50,7 +50,7 @@ const IMAGE_MAP = {
   // 'tidy-room':   imgTidyRoom,
 }
 
-export default function TaskImage({ imageKey, className = '' }) {
+export default function TaskImage({ imageKey, className = '', objectFit = 'contain' }) {
   const src = IMAGE_MAP[imageKey]
 
   if (src) {
@@ -58,7 +58,7 @@ export default function TaskImage({ imageKey, className = '' }) {
       <img
         src={src}
         alt={imageKey}
-        className={`object-contain ${className}`}
+        className={`${objectFit === 'cover' ? 'object-cover' : 'object-contain'} ${className}`}
       />
     )
   }

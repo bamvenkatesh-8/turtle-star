@@ -1,14 +1,6 @@
 import { useState, useRef } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import TaskCard from './TaskCard'
-
-function getVisibleDotIndices(total, current, max = 5) {
-  if (total <= max) return Array.from({ length: total }, (_, i) => i)
-  const half = Math.floor(max / 2)
-  let start = current - half
-  if (start < 0) start = 0
-  if (start + max > total) start = total - max
-  return Array.from({ length: max }, (_, i) => start + i)
-}
 
 export default function TaskCardSwipeView({ tasks, completedIds, onToggle, theme }) {
   const [currentIndex, setCurrentIndex] = useState(0)
@@ -32,7 +24,8 @@ export default function TaskCardSwipeView({ tasks, completedIds, onToggle, theme
 
   if (!tasks.length) return null
 
-  const visibleDots = getVisibleDotIndices(tasks.length, currentIndex)
+  const currentTask = tasks[currentIndex]
+  const isCompleted = completedIds.includes(currentTask.id)
 
   return (
     <div className="flex-1 flex flex-col px-4 pt-4 pb-2 overflow-hidden bg-gray-50">
@@ -62,45 +55,51 @@ export default function TaskCardSwipeView({ tasks, completedIds, onToggle, theme
           </div>
         </div>
 
-        {/* Nav arrows + dots (max 5 dots in sliding window) */}
-        <div className="flex items-center justify-between w-full max-w-sm lg:max-w-lg mt-4">
+        {/* Nav row: ‹  [check] [title]  › */}
+        <div className="flex items-center justify-between w-full max-w-sm lg:max-w-lg mt-3">
           <button
             onClick={() => goTo(currentIndex - 1)}
             disabled={currentIndex === 0}
-            className="w-12 h-12 rounded-full bg-white shadow-md text-gray-600 text-2xl disabled:opacity-30 hover:bg-gray-50 active:scale-95 transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-300"
+            className="w-12 h-12 rounded-full bg-white shadow-md text-gray-600 text-2xl disabled:opacity-30 hover:bg-gray-50 active:scale-95 transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-300 flex-shrink-0"
           >
             ‹
           </button>
 
-          <div className="flex gap-2 items-center">
-            {visibleDots.map((i) => (
-              <button
-                key={i}
-                onClick={() => goTo(i)}
-                className="rounded-full transition-all duration-200"
-                style={{
-                  width: i === currentIndex ? 24 : 12,
-                  height: 12,
-                  backgroundColor: i === currentIndex
-                    ? accentColor
-                    : completedIds.includes(tasks[i].id)
-                    ? '#4ade80'
-                    : '#D1D5DB',
-                }}
-              />
-            ))}
-          </div>
+          {/* Check + title replacing dots */}
+          <button
+            onClick={() => onToggle(currentTask.id)}
+            className="flex items-center gap-2 flex-1 justify-center px-3 py-2 rounded-xl hover:bg-gray-100 active:scale-95 transition-all duration-150 focus-visible:outline-none"
+          >
+            <AnimatePresence mode="wait">
+              {isCompleted ? (
+                <motion.div
+                  key="check"
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  exit={{ scale: 0 }}
+                  className="w-5 h-5 flex-shrink-0 rounded-full bg-green-500 flex items-center justify-center text-white font-bold"
+                  style={{ fontSize: 11 }}
+                >
+                  ✓
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="empty"
+                  className="w-5 h-5 flex-shrink-0 rounded-full border-2 border-gray-300 bg-white"
+                />
+              )}
+            </AnimatePresence>
+            <span className="text-sm font-semibold text-gray-900 truncate">{currentTask.label}</span>
+          </button>
 
           <button
             onClick={() => goTo(currentIndex + 1)}
             disabled={currentIndex === tasks.length - 1}
-            className="w-12 h-12 rounded-full bg-white shadow-md text-gray-600 text-2xl disabled:opacity-30 hover:bg-gray-50 active:scale-95 transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-300"
+            className="w-12 h-12 rounded-full bg-white shadow-md text-gray-600 text-2xl disabled:opacity-30 hover:bg-gray-50 active:scale-95 transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-300 flex-shrink-0"
           >
             ›
           </button>
         </div>
-
-        <p className="text-gray-400 text-xs mt-2">Swipe left or right to navigate</p>
       </div>
     </div>
   )

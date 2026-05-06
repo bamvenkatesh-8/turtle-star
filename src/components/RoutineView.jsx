@@ -181,6 +181,15 @@ export default function RoutineView({
 
       {/* MAIN CONTENT */}
       <div className="flex-1 flex flex-col min-h-0 bg-gray-50">
+        {/* Kid identity — compact bar, mobile only */}
+        <div className="lg:hidden flex items-center gap-2 px-4 py-2 bg-white border-b border-gray-100">
+          <span className="text-2xl">{kid.avatar}</span>
+          <span className="font-semibold text-base text-gray-900 tracking-tight">{kid.name}</span>
+          {kid.totalStars > 0 && (
+            <span className="ml-auto text-sm text-gray-500">⭐ {kid.totalStars}</span>
+          )}
+        </div>
+
         {/* Mobile: dropdown routine selector */}
         <div className="lg:hidden px-4 py-3 bg-white border-b border-gray-100">
           <div className="relative">
@@ -226,15 +235,6 @@ export default function RoutineView({
               )}
             </AnimatePresence>
           </div>
-        </div>
-
-        {/* Kid identity — compact bar, mobile only */}
-        <div className="lg:hidden flex items-center gap-2 px-4 py-2 bg-white border-b border-gray-100">
-          <span className="text-2xl">{kid.avatar}</span>
-          <span className="font-semibold text-base text-gray-900 tracking-tight">{kid.name}</span>
-          {kid.totalStars > 0 && (
-            <span className="ml-auto text-sm text-gray-500">⭐ {kid.totalStars}</span>
-          )}
         </div>
 
         {viewMode === 'list' ? (
