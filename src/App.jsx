@@ -105,18 +105,16 @@ export default function App() {
   const todayProgress = activeKid ? getProgressForDate(activeKid.id, today) : []
 
   return (
-    <div className="max-w-7xl mx-auto w-full relative min-h-screen">
-      {/* Celebration overlay */}
-      <AnimatePresence>
-        {celebration && (
-          <CelebrationModal
-            kidName={celebration.kidName}
-            celebrationThemeId={celebration.celebrationThemeId}
-            onClose={() => setCelebration(null)}
-            playFanfare={playFanfare}
-          />
-        )}
-      </AnimatePresence>
+    <div className="max-w-7xl mx-auto w-full min-h-screen">
+      {/* Celebration — rendered via portal on document.body, bypasses stacking contexts */}
+      {celebration && (
+        <CelebrationModal
+          kidName={celebration.kidName}
+          celebrationThemeId={celebration.celebrationThemeId}
+          onClose={() => setCelebration(null)}
+          playFanfare={playFanfare}
+        />
+      )}
 
       {screen === 'home' && (
         <KidSelector
@@ -146,7 +144,7 @@ export default function App() {
           routines={routines}
           getTasksForRoutine={getTasksForRoutine}
           getProgressForDate={getProgressForDate}
-          onBack={() => setScreen('dashboard')}
+          onBack={() => setScreen('routine')}
           onHome={goHome}
         />
       )}
@@ -157,7 +155,7 @@ export default function App() {
           onUpdateKid={updateKid}
           onDeleteKid={handleDeleteKid}
           onOpenEditRoutine={() => setScreen('edit-routine')}
-          onBack={() => setScreen('dashboard')}
+          onBack={() => setScreen('routine')}
           onHome={goHome}
           muted={muted}
           onToggleMute={handleToggleMute}

@@ -22,27 +22,29 @@ export default function SettingsPanel({
     setEditingKid(false)
   }
 
-  return (
-    <div className={`min-h-screen flex flex-col ${theme.bg} lg:max-w-3xl lg:mx-auto lg:my-0 lg:shadow-2xl`} style={{ fontFamily: theme.fontFamily }}>
-      <Header
-        onBack={onBack}
-        onHome={onHome}
-        title="Settings"
-        theme={theme}
-      />
+  const card = 'bg-white/8 backdrop-blur-sm border border-white/12 rounded-2xl'
 
-      <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4">
+  return (
+    <div className="min-h-screen flex flex-col lg:max-w-3xl lg:mx-auto lg:shadow-2xl" style={{ fontFamily: theme.fontFamily }}>
+      <Header onBack={onBack} onHome={onHome} title="Settings" theme={theme} />
+
+      <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3">
         {/* Kid profile */}
-        <div className="bg-white rounded-3xl shadow overflow-hidden">
+        <div className={card}>
           <div className="flex items-center gap-3 p-4">
             <span className="text-4xl">{kid.avatar}</span>
             <div className="flex-1">
-              <div className="font-bold text-lg text-gray-800">{kid.name}</div>
-              <div className="text-sm text-gray-500">⭐ {kid.totalStars} stars · 🔥 {kid.currentStreak} day streak</div>
+              <div className="font-bold text-lg text-white">{kid.name}</div>
+              <div className="text-sm text-white/50">⭐ {kid.totalStars} stars · 🔥 {kid.currentStreak} day streak</div>
             </div>
             <button
               onClick={() => setEditingKid((v) => !v)}
-              className="px-4 py-2 rounded-xl bg-purple-100 text-purple-700 font-bold text-sm hover:bg-purple-200"
+              className="px-4 py-2 rounded-xl font-bold text-sm transition-all"
+              style={{
+                background: editingKid ? 'rgba(255,255,255,0.1)' : `${theme.accentColor}30`,
+                color: editingKid ? 'rgba(255,255,255,0.6)' : theme.accentColor,
+                border: `1px solid ${editingKid ? 'rgba(255,255,255,0.15)' : theme.accentColor + '50'}`,
+              }}
             >
               {editingKid ? 'Cancel' : 'Edit'}
             </button>
@@ -54,14 +56,9 @@ export default function SettingsPanel({
                 initial={{ height: 0, opacity: 0 }}
                 animate={{ height: 'auto', opacity: 1 }}
                 exit={{ height: 0, opacity: 0 }}
-                className="overflow-hidden border-t border-gray-100"
+                className="overflow-hidden border-t border-white/10"
               >
-                <KidProfileForm
-                  kid={kid}
-                  onSave={handleSaveKid}
-                  onCancel={() => setEditingKid(false)}
-                  theme={theme}
-                />
+                <KidProfileForm kid={kid} onSave={handleSaveKid} onCancel={() => setEditingKid(false)} />
               </motion.div>
             )}
           </AnimatePresence>
@@ -70,47 +67,42 @@ export default function SettingsPanel({
         {/* Edit routines */}
         <button
           onClick={onOpenEditRoutine}
-          className="w-full bg-white rounded-3xl shadow p-4 flex items-center gap-3 text-left hover:bg-gray-50 active:scale-98"
+          className={`w-full ${card} p-4 flex items-center gap-3 text-left hover:bg-white/12 transition-all`}
         >
           <span className="text-3xl">📋</span>
-          <div>
-            <div className="font-bold text-gray-800">Manage Routines & Tasks</div>
-            <div className="text-sm text-gray-500">Add, remove, or reorder tasks</div>
+          <div className="flex-1">
+            <div className="font-bold text-white">Manage Routines & Tasks</div>
+            <div className="text-sm text-white/50">Add, remove, or reorder tasks</div>
           </div>
-          <span className="ml-auto text-gray-400 text-xl">›</span>
+          <span className="text-white/30 text-xl">›</span>
         </button>
 
         {/* Sound toggle */}
-        <div className="bg-white rounded-3xl shadow p-4 flex items-center gap-3">
+        <div className={`${card} p-4 flex items-center gap-3`}>
           <span className="text-3xl">{muted ? '🔇' : '🔊'}</span>
           <div className="flex-1">
-            <div className="font-bold text-gray-800">Sounds</div>
-            <div className="text-sm text-gray-500">{muted ? 'Sounds are off' : 'Sounds are on'}</div>
+            <div className="font-bold text-white">Sounds</div>
+            <div className="text-sm text-white/50">{muted ? 'Off' : 'On'}</div>
           </div>
           <button
             onClick={onToggleMute}
-            className={`w-14 h-8 rounded-full transition-colors relative ${
-              muted ? 'bg-gray-300' : 'bg-green-400'
-            }`}
+            className={`w-14 h-8 rounded-full transition-colors relative ${muted ? 'bg-white/20' : ''}`}
+            style={{ background: muted ? undefined : theme.accentColor }}
           >
             <div
-              className={`absolute top-1 w-6 h-6 rounded-full bg-white shadow transition-transform ${
-                muted ? 'left-1' : 'left-7'
-              }`}
+              className={`absolute top-1 w-6 h-6 rounded-full bg-white shadow transition-transform ${muted ? 'left-1' : 'left-7'}`}
             />
           </button>
         </div>
 
-        {/* Danger zone */}
-        <div className="bg-white rounded-3xl shadow p-4">
-          <h3 className="font-bold text-gray-600 mb-3">Danger Zone</h3>
+        {/* Delete */}
+        <div className={`${card} p-4`}>
+          <p className="text-white/40 text-xs font-bold uppercase tracking-wide mb-3">Danger Zone</p>
           <button
             onClick={() => {
-              if (confirm(`Delete ${kid.name}'s profile and all data?`)) {
-                onDeleteKid(kid.id)
-              }
+              if (confirm(`Delete ${kid.name}'s profile and all data?`)) onDeleteKid(kid.id)
             }}
-            className="w-full py-3 rounded-2xl border-2 border-red-200 text-red-500 font-bold hover:bg-red-50"
+            className="w-full py-3 rounded-xl border border-red-500/40 text-red-400 font-bold hover:bg-red-500/10 transition-all"
           >
             🗑️ Delete {kid.name}'s Profile
           </button>

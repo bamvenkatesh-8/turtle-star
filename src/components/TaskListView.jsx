@@ -14,9 +14,9 @@ export default function TaskListView({ tasks, completedIds, onToggle, theme }) {
         />
       ))}
       {tasks.length === 0 && (
-        <div className="text-center text-gray-400 mt-10">
-          <div className="text-5xl mb-2">📋</div>
-          <p>No tasks in this routine yet.</p>
+        <div className="text-center text-white/40 mt-16">
+          <div className="text-5xl mb-3">📋</div>
+          <p className="font-medium">No tasks yet. Add some in Settings.</p>
         </div>
       )}
     </div>

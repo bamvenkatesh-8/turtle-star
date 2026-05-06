@@ -4,7 +4,7 @@ import { CELEBRATION_THEMES } from '../data/celebrationThemes'
 
 const AVATARS = ['😊', '🐻', '🦁', '🐸', '🦊', '🐼', '🐨', '🐰', '🐯', '🐮', '🐱', '🐶', '🦄', '🐲', '⭐', '🌟']
 
-export default function KidProfileForm({ kid, onSave, onCancel, theme }) {
+export default function KidProfileForm({ kid, onSave, onCancel }) {
   const [name, setName] = useState(kid?.name || '')
   const [avatar, setAvatar] = useState(kid?.avatar || '😊')
   const [uiTheme, setUiTheme] = useState(kid?.uiTheme || 'cartoonish')
@@ -16,19 +16,20 @@ export default function KidProfileForm({ kid, onSave, onCancel, theme }) {
     onSave({ name: name.trim(), avatar, uiTheme, celebrationTheme })
   }
 
-  const t = theme || UI_THEMES.cartoonish
+  const accent = UI_THEMES[uiTheme]?.accentColor || '#a78bfa'
 
   return (
-    <form onSubmit={handleSubmit} className="p-4 space-y-5" style={{ fontFamily: t.fontFamily }}>
+    <form onSubmit={handleSubmit} className="p-5 space-y-6" style={{ fontFamily: UI_THEMES[uiTheme]?.fontFamily }}>
       {/* Name */}
       <div>
-        <label className="block font-bold mb-1 text-gray-700">Kid's Name</label>
+        <label className="block font-bold mb-2 text-white/70 text-sm uppercase tracking-wide">Kid's Name</label>
         <input
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
           placeholder="Enter name..."
-          className="w-full border-3 border-gray-300 rounded-2xl px-4 py-3 text-lg focus:border-purple-400 focus:outline-none"
+          className="w-full bg-white/10 border border-white/20 rounded-2xl px-4 py-3 text-lg text-white
+                     placeholder:text-white/30 focus:border-white/50 focus:bg-white/15 focus:outline-none transition-all"
           autoFocus
           maxLength={20}
         />
@@ -36,20 +37,31 @@ export default function KidProfileForm({ kid, onSave, onCancel, theme }) {
 
       {/* Avatar */}
       <div>
-        <label className="block font-bold mb-2 text-gray-700">Choose Avatar</label>
+        <label className="block font-bold mb-3 text-white/70 text-sm uppercase tracking-wide">Choose Avatar</label>
         <div className="flex flex-wrap gap-2">
           {AVATARS.map((a) => (
             <button
               key={a}
               type="button"
               onClick={() => setAvatar(a)}
-              className={`text-3xl w-12 h-12 rounded-xl transition-all ${
-                avatar === a
-                  ? 'bg-purple-200 border-3 border-purple-500 scale-110'
-                  : 'bg-gray-100 border-3 border-transparent hover:bg-gray-200'
-              }`}
+              className="relative text-3xl w-13 h-13 rounded-2xl border-2 transition-all flex items-center justify-center"
+              style={{
+                width: 52, height: 52,
+                borderColor: avatar === a ? accent : 'rgba(255,255,255,0.15)',
+                background: avatar === a ? `${accent}30` : 'rgba(255,255,255,0.08)',
+                boxShadow: avatar === a ? `0 0 14px ${accent}60` : 'none',
+                transform: avatar === a ? 'scale(1.15)' : 'scale(1)',
+              }}
             >
               {a}
+              {avatar === a && (
+                <span
+                  className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full flex items-center justify-center text-white text-[10px] font-bold"
+                  style={{ background: accent }}
+                >
+                  ✓
+                </span>
+              )}
             </button>
           ))}
         </div>
@@ -57,63 +69,90 @@ export default function KidProfileForm({ kid, onSave, onCancel, theme }) {
 
       {/* UI Theme */}
       <div>
-        <label className="block font-bold mb-2 text-gray-700">App Theme</label>
-        <div className="grid grid-cols-3 gap-2">
-          {Object.values(UI_THEMES).map((th) => (
-            <button
-              key={th.id}
-              type="button"
-              onClick={() => setUiTheme(th.id)}
-              className={`flex flex-col items-center gap-1 p-2 rounded-xl border-3 transition-all ${
-                uiTheme === th.id
-                  ? 'border-purple-500 bg-purple-50 scale-105'
-                  : 'border-gray-200 bg-white hover:border-gray-400'
-              }`}
-            >
-              <span className="text-2xl">{th.emoji}</span>
-              <span className="text-xs font-bold text-gray-600">{th.name}</span>
-            </button>
-          ))}
+        <label className="block font-bold mb-3 text-white/70 text-sm uppercase tracking-wide">App Theme</label>
+        <div className="grid grid-cols-3 gap-3">
+          {Object.values(UI_THEMES).map((th) => {
+            const selected = uiTheme === th.id
+            return (
+              <button
+                key={th.id}
+                type="button"
+                onClick={() => setUiTheme(th.id)}
+                className="relative flex flex-col items-center gap-2 p-3 rounded-2xl border-2 transition-all"
+                style={{
+                  borderColor: selected ? th.accentColor : 'rgba(255,255,255,0.15)',
+                  background: selected ? `${th.accentColor}25` : 'rgba(255,255,255,0.08)',
+                  boxShadow: selected ? `0 0 16px ${th.accentColor}50` : 'none',
+                }}
+              >
+                {selected && (
+                  <span
+                    className="absolute top-2 right-2 w-5 h-5 rounded-full flex items-center justify-center text-white text-[10px] font-bold"
+                    style={{ background: th.accentColor }}
+                  >
+                    ✓
+                  </span>
+                )}
+                <span className="text-3xl">{th.emoji}</span>
+                <span className="text-xs font-bold text-white/80">{th.name}</span>
+              </button>
+            )
+          })}
         </div>
       </div>
 
       {/* Celebration Theme */}
       <div>
-        <label className="block font-bold mb-2 text-gray-700">Celebration Theme</label>
-        <div className="grid grid-cols-3 gap-2">
-          {Object.values(CELEBRATION_THEMES).map((ct) => (
-            <button
-              key={ct.id}
-              type="button"
-              onClick={() => setCelebrationTheme(ct.id)}
-              className={`flex flex-col items-center gap-1 p-2 rounded-xl border-3 transition-all ${
-                celebrationTheme === ct.id
-                  ? 'border-purple-500 bg-purple-50 scale-105'
-                  : 'border-gray-200 bg-white hover:border-gray-400'
-              }`}
-            >
-              <span className="text-2xl">{ct.emoji}</span>
-              <span className="text-xs font-bold text-gray-600 text-center leading-tight">{ct.name}</span>
-            </button>
-          ))}
+        <label className="block font-bold mb-3 text-white/70 text-sm uppercase tracking-wide">Celebration Theme</label>
+        <div className="grid grid-cols-3 gap-3">
+          {Object.values(CELEBRATION_THEMES).map((ct) => {
+            const selected = celebrationTheme === ct.id
+            return (
+              <button
+                key={ct.id}
+                type="button"
+                onClick={() => setCelebrationTheme(ct.id)}
+                className="relative flex flex-col items-center gap-2 p-3 rounded-2xl border-2 transition-all"
+                style={{
+                  borderColor: selected ? accent : 'rgba(255,255,255,0.15)',
+                  background: selected ? `${accent}25` : 'rgba(255,255,255,0.08)',
+                  boxShadow: selected ? `0 0 16px ${accent}50` : 'none',
+                }}
+              >
+                {selected && (
+                  <span
+                    className="absolute top-2 right-2 w-5 h-5 rounded-full flex items-center justify-center text-white text-[10px] font-bold"
+                    style={{ background: accent }}
+                  >
+                    ✓
+                  </span>
+                )}
+                <span className="text-3xl">{ct.emoji}</span>
+                <span className="text-xs font-bold text-white/70 text-center leading-tight">{ct.name}</span>
+              </button>
+            )
+          })}
         </div>
       </div>
 
       {/* Buttons */}
-      <div className="flex gap-3 pt-2">
-        <button
-          type="button"
-          onClick={onCancel}
-          className="flex-1 py-3 rounded-2xl border-3 border-gray-300 font-bold text-gray-600 hover:bg-gray-100"
-        >
-          Cancel
-        </button>
+      <div className="flex gap-3 pt-1">
+        {onCancel && (
+          <button
+            type="button"
+            onClick={onCancel}
+            className="flex-1 py-3 rounded-2xl border border-white/20 font-bold text-white/70 hover:bg-white/10 transition-all"
+          >
+            Cancel
+          </button>
+        )}
         <button
           type="submit"
           disabled={!name.trim()}
-          className="flex-1 py-3 rounded-2xl bg-purple-500 text-white font-bold disabled:opacity-40 hover:bg-purple-600 active:scale-95 transition-all"
+          className="flex-1 py-3 rounded-2xl font-bold text-white disabled:opacity-40 transition-all active:scale-95"
+          style={{ background: `linear-gradient(135deg, ${accent}, ${accent}cc)` }}
         >
-          {kid ? 'Save' : 'Add Kid ✨'}
+          {kid ? 'Save Changes' : 'Add Kid ✨'}
         </button>
       </div>
     </form>
