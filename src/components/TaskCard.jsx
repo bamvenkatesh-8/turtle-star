@@ -2,17 +2,26 @@ import { motion, AnimatePresence } from 'framer-motion'
 import confetti from 'canvas-confetti'
 import TaskImage from './TaskImage'
 
-function fireConfetti() {
+const CONFETTI_COLORS = ['#007AFF', '#FF9F0A', '#34C759', '#FF3B30', '#AF52DE', '#FFD60A']
+
+function burst() {
   confetti({
-    particleCount: 40,
-    spread: 80,
-    origin: { y: 0.5 },
-    colors: ['#007AFF', '#FF9F0A', '#34C759', '#FF3B30', '#AF52DE', '#FFD60A'],
-    scalar: 0.8,
-    gravity: 1.2,
-    drift: 0,
-    ticks: 90,
+    particleCount: 35,
+    spread: 100,
+    origin: { x: Math.random(), y: Math.random() * 0.6 + 0.1 },
+    colors: CONFETTI_COLORS,
+    scalar: 0.9,
+    gravity: 0.7,
+    drift: (Math.random() - 0.5) * 0.5,
+    ticks: 220,
   })
+}
+
+function fireConfetti() {
+  burst()
+  setTimeout(burst, 350)
+  setTimeout(burst, 700)
+  setTimeout(burst, 1050)
 }
 
 export default function TaskCard({ task, completed, onToggle, theme, compact = false }) {
