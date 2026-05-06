@@ -83,10 +83,10 @@ export default function KidProfileForm({ kid, onSave, onCancel }) {
                 key={th.id}
                 type="button"
                 onClick={() => setUiTheme(th.id)}
-                className="relative flex flex-col items-center gap-2 p-3 rounded-2xl border-2 transition-all duration-150 hover:bg-gray-50 active:scale-95 focus-visible:outline-none"
+                className="relative flex flex-col items-center gap-2 p-3 rounded-2xl border-2 transition-all duration-150 active:scale-95 focus-visible:outline-none overflow-hidden"
                 style={{
-                  borderColor: selected ? th.accentColor : '#E5E7EB',
-                  backgroundColor: selected ? `${th.accentColor}12` : '#F9FAFB',
+                  borderColor: selected ? th.accentColor : (th.isDark ? 'rgba(255,255,255,0.20)' : '#E5E7EB'),
+                  background: th.isDark ? th.pageBg : (selected ? `${th.accentColor}12` : '#F9FAFB'),
                   boxShadow: selected ? `0 0 0 3px ${th.accentColor}25` : 'none',
                 }}
               >
@@ -99,7 +99,12 @@ export default function KidProfileForm({ kid, onSave, onCancel }) {
                   </span>
                 )}
                 <span className="text-3xl">{th.emoji}</span>
-                <span className="text-xs font-semibold text-gray-700">{th.name}</span>
+                <span
+                  className="text-xs font-semibold"
+                  style={{ color: th.isDark ? '#FFFFFF' : '#374151' }}
+                >
+                  {th.name}
+                </span>
               </button>
             )
           })}

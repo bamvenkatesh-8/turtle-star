@@ -2,7 +2,6 @@ import { useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import Header from './Header'
 import ProgressBar from './ProgressBar'
-import RoutineFilter from './RoutineFilter'
 import ViewModeToggle from './ViewModeToggle'
 import TaskListView from './TaskListView'
 import TaskCardSwipeView from './TaskCardSwipeView'
@@ -49,8 +48,12 @@ export default function RoutineView({
     onToggleTask(kid.id, routine.id, taskId, getTasksForRoutine(routine.id).length)
   }
 
+  const iconBtnClass = theme.isDark
+    ? 'bg-white/10 hover:bg-white/20 active:scale-95 transition-all duration-150 flex items-center justify-center text-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40'
+    : 'bg-gray-100 hover:bg-gray-200 active:scale-95 transition-all duration-150 flex items-center justify-center text-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400'
+
   return (
-    <div className="min-h-screen flex flex-col lg:flex-row" style={{ fontFamily: theme.fontFamily }}>
+    <div className="min-h-screen flex flex-col lg:flex-row" style={{ background: theme.pageBg, fontFamily: theme.fontFamily }}>
 
       {/* MOBILE HEADER */}
       <div className="lg:hidden">
@@ -61,17 +64,17 @@ export default function RoutineView({
           theme={theme}
           rightSlot={
             <div className="flex items-center gap-1">
-              <ViewModeToggle mode={viewMode} onChange={setViewMode} />
+              <ViewModeToggle mode={viewMode} onChange={setViewMode} theme={theme} />
               <button
                 onClick={onOpenHistory}
-                className="w-10 h-10 rounded-xl bg-gray-100 hover:bg-gray-200 active:scale-95 transition-all duration-150 flex items-center justify-center text-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400"
+                className={`w-10 h-10 rounded-xl ${iconBtnClass}`}
                 aria-label="History"
               >
                 📅
               </button>
               <button
                 onClick={onOpenSettings}
-                className="w-10 h-10 rounded-xl bg-gray-100 hover:bg-gray-200 active:scale-95 transition-all duration-150 flex items-center justify-center text-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400"
+                className={`w-10 h-10 rounded-xl ${iconBtnClass}`}
                 aria-label="Settings"
               >
                 ⚙️
@@ -82,22 +85,26 @@ export default function RoutineView({
       </div>
 
       {/* DESKTOP SIDEBAR */}
-      <aside className="hidden lg:flex lg:flex-col lg:w-72 xl:w-80 lg:flex-shrink-0 bg-white border-r border-gray-200">
+      <aside
+        className="hidden lg:flex lg:flex-col lg:w-72 xl:w-80 lg:flex-shrink-0 border-r"
+        style={{ background: theme.sectionBg, borderColor: theme.headerBorder }}
+      >
         {/* Kid profile */}
-        <div className="px-6 py-6 border-b border-gray-100">
+        <div className="px-6 py-6 border-b" style={{ borderColor: theme.separatorColor }}>
           <button
             onClick={onHome}
-            className="flex items-center gap-2 text-gray-400 hover:text-gray-700 text-sm mb-5 transition-colors duration-150 focus-visible:outline-none"
+            className="flex items-center gap-2 text-sm mb-5 transition-colors duration-150 focus-visible:outline-none"
+            style={{ color: theme.textSecondary }}
           >
             🏠 <span className="font-medium">Home</span>
           </button>
           <div className="flex items-center gap-4 mb-4">
             <span className="text-5xl">{kid.avatar}</span>
             <div>
-              <div className="font-bold text-xl text-gray-900 tracking-tight">{kid.name}</div>
+              <div className="font-bold text-xl tracking-tight" style={{ color: theme.textPrimary }}>{kid.name}</div>
               <div className="flex items-center gap-2 mt-1">
                 <span className="text-yellow-500">⭐</span>
-                <span className="font-semibold text-gray-700">{kid.totalStars}</span>
+                <span className="font-semibold" style={{ color: theme.textSecondary }}>{kid.totalStars}</span>
                 {latestBadge && <span className="text-base ml-1">{latestBadge.emoji}</span>}
               </div>
             </div>
@@ -111,7 +118,12 @@ export default function RoutineView({
 
         {/* Routines list */}
         <div className="flex-1 overflow-y-auto px-4 py-4">
-          <div className="text-xs font-semibold tracking-widest text-gray-400 uppercase mb-3 px-2">Routines</div>
+          <div
+            className="text-xs font-semibold tracking-widest uppercase mb-3 px-2"
+            style={{ color: theme.textMuted }}
+          >
+            Routines
+          </div>
           {routines.map((r) => {
             const progress = todayProgress.find((p) => p.routineId === r.id)
             const done = progress?.completedTaskIds?.length || 0
@@ -121,21 +133,24 @@ export default function RoutineView({
               <button
                 key={r.id}
                 onClick={() => setFilterRoutineId(r.id)}
-                className="w-full flex items-center gap-3 px-3 py-3 rounded-xl mb-1 text-left transition-all duration-150 hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2"
+                className="w-full flex items-center gap-3 px-3 py-3 rounded-xl mb-1 text-left transition-all duration-150 focus-visible:outline-none focus-visible:ring-2"
                 style={{
-                  backgroundColor: selected ? `${accentColor}12` : 'transparent',
+                  backgroundColor: selected ? `${accentColor}18` : 'transparent',
                   borderLeft: selected ? `3px solid ${accentColor}` : '3px solid transparent',
                   '--tw-ring-color': accentColor,
                 }}
               >
                 <span className="text-xl">{ROUTINE_ICONS[r.type] || '⚡'}</span>
                 <div className="flex-1 min-w-0">
-                  <div className={`font-semibold truncate text-sm ${selected ? 'text-gray-900' : 'text-gray-600'}`}
-                    style={selected ? { color: accentColor } : {}}
+                  <div
+                    className="font-semibold truncate text-sm"
+                    style={{ color: selected ? accentColor : theme.textSecondary }}
                   >
                     {r.name}
                   </div>
-                  {done > 0 && <div className="text-xs text-gray-400">{done}/{total} done</div>}
+                  {done > 0 && (
+                    <div className="text-xs" style={{ color: theme.textMuted }}>{done}/{total} done</div>
+                  )}
                 </div>
                 {progress?.fullyCompleted && <span className="text-base flex-shrink-0">✅</span>}
               </button>
@@ -143,15 +158,16 @@ export default function RoutineView({
           })}
           <button
             onClick={() => setFilterRoutineId(null)}
-            className="w-full flex items-center gap-3 px-3 py-3 rounded-xl text-left transition-all duration-150 hover:bg-gray-50 focus-visible:outline-none"
+            className="w-full flex items-center gap-3 px-3 py-3 rounded-xl text-left transition-all duration-150 focus-visible:outline-none"
             style={{
-              backgroundColor: filterRoutineId === null ? `${accentColor}12` : 'transparent',
+              backgroundColor: filterRoutineId === null ? `${accentColor}18` : 'transparent',
               borderLeft: filterRoutineId === null ? `3px solid ${accentColor}` : '3px solid transparent',
             }}
           >
             <span className="text-xl">📋</span>
-            <span className={`font-semibold text-sm ${filterRoutineId === null ? 'text-gray-900' : 'text-gray-500'}`}
-              style={filterRoutineId === null ? { color: accentColor } : {}}
+            <span
+              className="font-semibold text-sm"
+              style={{ color: filterRoutineId === null ? accentColor : theme.textSecondary }}
             >
               All Tasks
             </span>
@@ -159,46 +175,52 @@ export default function RoutineView({
         </div>
 
         {/* Bottom nav */}
-        <div className="px-4 py-4 border-t border-gray-100 space-y-1">
+        <div className="px-4 py-4 border-t space-y-1" style={{ borderColor: theme.separatorColor }}>
           <button
             onClick={onOpenHistory}
-            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-gray-500 hover:bg-gray-50 hover:text-gray-800 transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-300"
+            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-300"
+            style={{ color: theme.textSecondary }}
           >
             <span className="text-xl">📅</span><span className="font-medium text-sm">History</span>
           </button>
           <button
             onClick={onOpenSettings}
-            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-gray-500 hover:bg-gray-50 hover:text-gray-800 transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-300"
+            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-300"
+            style={{ color: theme.textSecondary }}
           >
             <span className="text-xl">⚙️</span><span className="font-medium text-sm">Settings</span>
           </button>
           <div className="flex items-center gap-3 px-3 py-2">
-            <span className="text-gray-400 text-xs font-medium">View:</span>
-            <ViewModeToggle mode={viewMode} onChange={setViewMode} />
+            <span className="text-xs font-medium" style={{ color: theme.textMuted }}>View:</span>
+            <ViewModeToggle mode={viewMode} onChange={setViewMode} theme={theme} />
           </div>
         </div>
       </aside>
 
       {/* MAIN CONTENT */}
-      <div className="flex-1 flex flex-col min-h-0 bg-gray-50">
+      <div className="flex-1 flex flex-col min-h-0" style={{ background: theme.pageBg }}>
         {/* Kid identity — compact bar, mobile only */}
-        <div className="lg:hidden flex items-center gap-2 px-4 py-2 bg-white border-b border-gray-100">
+        <div
+          className="lg:hidden flex items-center gap-2 px-4 py-2 border-b"
+          style={{ background: theme.sectionBg, borderColor: theme.headerBorder }}
+        >
           <span className="text-2xl">{kid.avatar}</span>
-          <span className="font-semibold text-base text-gray-900 tracking-tight">{kid.name}</span>
+          <span className="font-semibold text-base tracking-tight" style={{ color: theme.textPrimary }}>{kid.name}</span>
           {kid.totalStars > 0 && (
-            <span className="ml-auto text-sm text-gray-500">⭐ {kid.totalStars}</span>
+            <span className="ml-auto text-sm" style={{ color: theme.textSecondary }}>⭐ {kid.totalStars}</span>
           )}
         </div>
 
         {/* Mobile: dropdown routine selector */}
-        <div className="lg:hidden px-4 py-3 bg-white border-b border-gray-100">
+        <div className="lg:hidden px-4 py-3 border-b" style={{ background: theme.sectionBg, borderColor: theme.headerBorder }}>
           <div className="relative">
             <button
               onClick={() => setShowDropdown((v) => !v)}
-              className="flex items-center gap-2 px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl shadow-sm text-gray-900 font-medium text-sm hover:bg-gray-100 active:scale-95 transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-300 w-full justify-between"
+              className="flex items-center gap-2 px-4 py-2.5 border rounded-xl shadow-sm font-medium text-sm active:scale-95 transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-300 w-full justify-between"
+              style={{ background: theme.sectionBg, borderColor: theme.surfaceBorder, color: theme.textPrimary }}
             >
               <span>{dropdownLabel}</span>
-              <span className="text-gray-400 text-xs">{showDropdown ? '▲' : '▽'}</span>
+              <span className="text-xs" style={{ color: theme.textMuted }}>{showDropdown ? '▲' : '▽'}</span>
             </button>
 
             <AnimatePresence>
@@ -208,12 +230,13 @@ export default function RoutineView({
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: -8, scale: 0.97 }}
                   transition={{ duration: 0.15 }}
-                  className="absolute top-full mt-1 left-0 right-0 bg-white border border-gray-200 rounded-xl shadow-lg z-10 overflow-hidden"
+                  className="absolute top-full mt-1 left-0 right-0 border rounded-xl shadow-lg z-10 overflow-hidden"
+                  style={{ background: theme.sectionBg, borderColor: theme.surfaceBorder }}
                 >
                   <button
                     onClick={() => { setFilterRoutineId(null); setShowDropdown(false) }}
-                    className={`w-full flex items-center gap-3 px-4 py-3 text-sm text-left transition-colors hover:bg-gray-50 ${!filterRoutineId ? 'font-semibold' : 'text-gray-700 font-medium'}`}
-                    style={!filterRoutineId ? { color: accentColor } : {}}
+                    className={`w-full flex items-center gap-3 px-4 py-3 text-sm text-left transition-colors ${!filterRoutineId ? 'font-semibold' : 'font-medium'}`}
+                    style={{ color: !filterRoutineId ? accentColor : theme.textSecondary }}
                   >
                     <span>📋</span>
                     <span>All Tasks</span>
@@ -223,8 +246,11 @@ export default function RoutineView({
                     <button
                       key={r.id}
                       onClick={() => { setFilterRoutineId(r.id); setShowDropdown(false) }}
-                      className={`w-full flex items-center gap-3 px-4 py-3 text-sm text-left border-t border-gray-100 transition-colors hover:bg-gray-50 ${filterRoutineId === r.id ? 'font-semibold' : 'text-gray-700 font-medium'}`}
-                      style={filterRoutineId === r.id ? { color: accentColor } : {}}
+                      className={`w-full flex items-center gap-3 px-4 py-3 text-sm text-left border-t transition-colors ${filterRoutineId === r.id ? 'font-semibold' : 'font-medium'}`}
+                      style={{
+                        color: filterRoutineId === r.id ? accentColor : theme.textSecondary,
+                        borderColor: theme.separatorColor,
+                      }}
                     >
                       <span>{ROUTINE_ICONS[r.type] || '⚡'}</span>
                       <span>{r.name}</span>

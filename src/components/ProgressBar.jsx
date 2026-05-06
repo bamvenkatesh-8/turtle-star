@@ -5,14 +5,17 @@ export default function ProgressBar({ completed, total, theme }) {
   const accentColor = theme?.accentColor || '#007AFF'
 
   return (
-    <div className="px-4 py-3 bg-white border-b border-gray-100">
+    <div
+      className="px-4 py-3 border-b"
+      style={{ background: theme?.sectionBg || '#FFFFFF', borderColor: theme?.headerBorder || '#E5E7EB' }}
+    >
       <div className="flex justify-between items-center mb-2">
-        <span className="text-sm font-semibold text-gray-700">
+        <span className="text-sm font-semibold" style={{ color: theme?.textPrimary || '#374151' }}>
           {completed}/{total} tasks done
         </span>
-        <span className="text-sm font-semibold text-gray-400">{pct}%</span>
+        <span className="text-sm font-semibold" style={{ color: theme?.textSecondary || '#9CA3AF' }}>{pct}%</span>
       </div>
-      <div className="h-2 rounded-full bg-gray-200 overflow-hidden">
+      <div className="h-2 rounded-full overflow-hidden" style={{ background: theme?.trackBg || '#E5E7EB' }}>
         <motion.div
           className="h-full rounded-full"
           style={{ backgroundColor: accentColor }}

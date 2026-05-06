@@ -42,15 +42,25 @@ export default function TaskCard({ task, completed, onToggle, theme, compact = f
         onClick={handleToggle}
         className={`w-full flex flex-row items-center gap-3 p-3 rounded-2xl border transition-all duration-150 select-none
           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2
-          ${completed ? 'bg-green-50 border-green-200' : 'bg-white border-gray-100 shadow-sm hover:shadow-md hover:border-gray-200'}
+          ${completed ? 'bg-green-50 border-green-200' : 'hover:shadow-md'}
         `}
-        style={{ minHeight: 72, '--tw-ring-color': accentColor }}
+        style={completed ? { minHeight: 72 } : {
+          minHeight: 72,
+          background: theme?.surfaceBg,
+          borderColor: theme?.surfaceBorder,
+          '--tw-ring-color': accentColor,
+        }}
       >
         <div className="w-14 h-14 flex-shrink-0">
           <TaskImage imageKey={task.imageKey} className="w-full h-full" />
         </div>
         <div className="flex-1 text-left">
-          <span className="font-semibold tracking-tight text-base text-gray-900">{task.label}</span>
+          <span
+            className="font-semibold tracking-tight text-base"
+            style={{ color: completed ? undefined : theme?.textPrimary }}
+          >
+            {task.label}
+          </span>
         </div>
         <AnimatePresence mode="wait">
           {completed ? (
@@ -73,9 +83,11 @@ export default function TaskCard({ task, completed, onToggle, theme, compact = f
       onClick={handleToggle}
       className={`w-full block rounded-2xl border overflow-hidden transition-all duration-150 select-none
         focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2
-        ${completed ? 'border-green-200' : 'border-gray-100 shadow-sm hover:shadow-md hover:border-gray-200'}
       `}
-      style={{ '--tw-ring-color': accentColor }}
+      style={{
+        borderColor: completed ? '#BBF7D0' : (theme?.surfaceBorder || '#E5E7EB'),
+        '--tw-ring-color': accentColor,
+      }}
     >
       <div className="w-full h-64">
         <TaskImage imageKey={task.imageKey} objectFit="cover" className="w-full h-full" />

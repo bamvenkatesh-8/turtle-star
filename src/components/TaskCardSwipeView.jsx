@@ -27,8 +27,14 @@ export default function TaskCardSwipeView({ tasks, completedIds, onToggle, theme
   const currentTask = tasks[currentIndex]
   const isCompleted = completedIds.includes(currentTask.id)
 
+  const navBtnClass = theme?.isDark
+    ? 'bg-white/10 hover:bg-white/20 text-white focus-visible:ring-white/40'
+    : 'bg-white shadow-md text-gray-600 hover:bg-gray-50 focus-visible:ring-gray-300'
+
+  const centerBtnHover = theme?.isDark ? 'hover:bg-white/10' : 'hover:bg-gray-100'
+
   return (
-    <div className="flex-1 flex flex-col px-4 pt-4 pb-2 overflow-hidden bg-gray-50">
+    <div className="flex-1 flex flex-col px-4 pt-4 pb-2 overflow-hidden" style={{ background: theme?.pageBg }}>
       <div className="flex-1 flex flex-col items-center justify-center">
 
         {/* CSS carousel — all cards in a flex row, container clips overflow */}
@@ -60,7 +66,7 @@ export default function TaskCardSwipeView({ tasks, completedIds, onToggle, theme
           <button
             onClick={() => goTo(currentIndex - 1)}
             disabled={currentIndex === 0}
-            className="w-12 h-12 rounded-full bg-white shadow-md text-gray-600 text-2xl disabled:opacity-30 hover:bg-gray-50 active:scale-95 transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-300 flex-shrink-0"
+            className={`w-12 h-12 rounded-full text-2xl disabled:opacity-30 active:scale-95 transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 flex-shrink-0 ${navBtnClass}`}
           >
             ‹
           </button>
@@ -68,7 +74,7 @@ export default function TaskCardSwipeView({ tasks, completedIds, onToggle, theme
           {/* Check + title replacing dots */}
           <button
             onClick={() => onToggle(currentTask.id)}
-            className="flex items-center gap-2 flex-1 justify-center px-3 py-2 rounded-xl hover:bg-gray-100 active:scale-95 transition-all duration-150 focus-visible:outline-none"
+            className={`flex items-center gap-2 flex-1 justify-center px-3 py-2 rounded-xl active:scale-95 transition-all duration-150 focus-visible:outline-none ${centerBtnHover}`}
           >
             <AnimatePresence mode="wait">
               {isCompleted ? (
@@ -89,13 +95,18 @@ export default function TaskCardSwipeView({ tasks, completedIds, onToggle, theme
                 />
               )}
             </AnimatePresence>
-            <span className="text-sm font-semibold text-gray-900 truncate">{currentTask.label}</span>
+            <span
+              className="text-sm font-semibold truncate"
+              style={{ color: theme?.textPrimary }}
+            >
+              {currentTask.label}
+            </span>
           </button>
 
           <button
             onClick={() => goTo(currentIndex + 1)}
             disabled={currentIndex === tasks.length - 1}
-            className="w-12 h-12 rounded-full bg-white shadow-md text-gray-600 text-2xl disabled:opacity-30 hover:bg-gray-50 active:scale-95 transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-300 flex-shrink-0"
+            className={`w-12 h-12 rounded-full text-2xl disabled:opacity-30 active:scale-95 transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 flex-shrink-0 ${navBtnClass}`}
           >
             ›
           </button>
