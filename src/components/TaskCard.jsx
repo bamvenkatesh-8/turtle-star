@@ -19,9 +19,12 @@ function burst() {
 
 function fireConfetti() {
   burst()
-  setTimeout(burst, 350)
   setTimeout(burst, 700)
-  setTimeout(burst, 1050)
+  setTimeout(burst, 1400)
+  setTimeout(burst, 2100)
+  setTimeout(burst, 2800)
+  setTimeout(burst, 3500)
+  setTimeout(burst, 4200)
 }
 
 export default function TaskCard({ task, completed, onToggle, theme, compact = false }) {
