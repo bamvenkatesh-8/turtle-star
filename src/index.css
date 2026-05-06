@@ -1,7 +1,7 @@
-@import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&family=Bubblegum+Sans&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 @import "tailwindcss";
 
-* {
+*, *::before, *::after {
   box-sizing: border-box;
 }
 
@@ -10,12 +10,20 @@ body {
   padding: 0;
   overflow-x: hidden;
   -webkit-tap-highlight-color: transparent;
-  background: linear-gradient(135deg, #1a0a2e 0%, #2d1b4e 50%, #0d1b3e 100%);
-  background-attachment: fixed;
+  background: #F2F2F7;
   min-height: 100dvh;
+  font-family: Inter, -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
 }
 
 #root {
   min-height: 100dvh;
   width: 100%;
+}
+
+.scrollbar-none {
+  scrollbar-width: none;
+}
+
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
 }

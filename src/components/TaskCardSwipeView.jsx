@@ -7,6 +7,7 @@ export default function TaskCardSwipeView({ tasks, completedIds, onToggle, theme
   const [direction, setDirection] = useState(0)
 
   const task = tasks[currentIndex]
+  const accentColor = theme?.accentColor || '#007AFF'
 
   function goNext() {
     if (currentIndex < tasks.length - 1) {
@@ -22,7 +23,6 @@ export default function TaskCardSwipeView({ tasks, completedIds, onToggle, theme
     }
   }
 
-  // Swipe handling via drag end
   function handleDragEnd(_, info) {
     if (info.offset.x < -60) goNext()
     else if (info.offset.x > 60) goPrev()
@@ -31,7 +31,7 @@ export default function TaskCardSwipeView({ tasks, completedIds, onToggle, theme
   if (!task) return null
 
   return (
-    <div className="flex-1 flex flex-col px-4 pt-4 pb-2 overflow-hidden">
+    <div className="flex-1 flex flex-col px-4 pt-4 pb-2 overflow-hidden bg-gray-50">
       {/* Card area */}
       <div className="flex-1 flex flex-col items-center justify-center relative overflow-hidden">
         <AnimatePresence mode="wait" initial={false}>
@@ -60,24 +60,27 @@ export default function TaskCardSwipeView({ tasks, completedIds, onToggle, theme
           <button
             onClick={goPrev}
             disabled={currentIndex === 0}
-            className="w-12 h-12 rounded-full bg-white/80 shadow text-2xl disabled:opacity-30 active:scale-95 transition-transform"
+            className="w-12 h-12 rounded-full bg-white shadow-md text-gray-600 text-2xl disabled:opacity-30 hover:bg-gray-50 active:scale-95 transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-300"
           >
             ‹
           </button>
 
           {/* Dot indicators */}
           <div className="flex gap-2">
-            {tasks.map((_, i) => (
+            {tasks.map((t, i) => (
               <button
                 key={i}
                 onClick={() => { setDirection(i > currentIndex ? 1 : -1); setCurrentIndex(i) }}
-                className={`rounded-full transition-all ${
-                  i === currentIndex
-                    ? 'w-6 h-3 bg-white'
+                className="rounded-full transition-all duration-200"
+                style={{
+                  width: i === currentIndex ? 24 : 12,
+                  height: 12,
+                  backgroundColor: i === currentIndex
+                    ? accentColor
                     : completedIds.includes(tasks[i].id)
-                    ? 'w-3 h-3 bg-green-400'
-                    : 'w-3 h-3 bg-white/40'
-                }`}
+                    ? '#4ade80'
+                    : '#D1D5DB',
+                }}
               />
             ))}
           </div>
@@ -85,14 +88,14 @@ export default function TaskCardSwipeView({ tasks, completedIds, onToggle, theme
           <button
             onClick={goNext}
             disabled={currentIndex === tasks.length - 1}
-            className="w-12 h-12 rounded-full bg-white/80 shadow text-2xl disabled:opacity-30 active:scale-95 transition-transform"
+            className="w-12 h-12 rounded-full bg-white shadow-md text-gray-600 text-2xl disabled:opacity-30 hover:bg-gray-50 active:scale-95 transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-300"
           >
             ›
           </button>
         </div>
 
         {/* Swipe hint */}
-        <p className="text-white/60 text-xs mt-2">Swipe left or right to navigate</p>
+        <p className="text-gray-400 text-xs mt-2">Swipe left or right to navigate</p>
       </div>
     </div>
   )
