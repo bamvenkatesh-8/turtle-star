@@ -30,7 +30,7 @@ export default function TaskCard({ task, completed, onToggle, theme, compact = f
       <div className={`${compact ? 'flex-1 text-left' : 'text-center'}`}>
         <span
           className={`font-semibold tracking-tight ${compact ? 'text-base' : 'text-xl'} ${
-            completed ? 'line-through text-gray-400' : 'text-gray-900'
+            'text-gray-900'
           }`}
         >
           {task.label}

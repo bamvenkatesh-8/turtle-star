@@ -393,7 +393,7 @@ export default function TaskImage({ imageKey, className = '', completed = false 
   const img = IMAGES[imageKey] || IMAGES['placeholder']
   return (
     <div
-      className={`transition-all duration-300 ${completed ? 'grayscale opacity-60' : ''} ${className}`}
+      className={`transition-all duration-300 ${className}`}
     >
       {img}
     </div>
