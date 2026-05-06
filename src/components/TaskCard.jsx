@@ -39,9 +39,9 @@ export default function TaskCard({ task, completed, onToggle, theme, compact = f
     <motion.button
       whileTap={{ scale: 0.98 }}
       onClick={handleToggle}
-      className={`w-full flex ${compact ? 'flex-row items-center gap-3 p-3' : 'flex-col items-center gap-4 p-6'}
-        rounded-2xl border transition-all duration-150 select-none
+      className={`w-full flex rounded-2xl border transition-all duration-150 select-none
         focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2
+        ${compact ? 'flex-row items-center gap-3 p-3' : 'flex-col overflow-hidden'}
         ${completed
           ? 'bg-green-50 border-green-200'
           : 'bg-white border-gray-100 shadow-sm hover:shadow-md hover:border-gray-200'
@@ -53,40 +53,64 @@ export default function TaskCard({ task, completed, onToggle, theme, compact = f
       }}
     >
       {/* Image */}
-      <div className={compact ? 'w-14 h-14 flex-shrink-0' : 'w-36 h-36 mx-auto'}>
-        <TaskImage imageKey={task.imageKey} completed={completed} className="w-full h-full" />
+      <div className={compact ? 'w-14 h-14 flex-shrink-0' : 'w-full h-56 p-3'}>
+        <TaskImage imageKey={task.imageKey} className="w-full h-full" />
       </div>
 
-      {/* Label */}
-      <div className={`${compact ? 'flex-1 text-left' : 'text-center'}`}>
-        <span
-          className={`font-semibold tracking-tight ${compact ? 'text-base' : 'text-xl'} ${
-            'text-gray-900'
-          }`}
-        >
-          {task.label}
-        </span>
-      </div>
-
-      {/* Check indicator */}
-      <AnimatePresence mode="wait">
-        {completed ? (
-          <motion.div
-            key="check"
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            exit={{ scale: 0 }}
-            className={`${compact ? 'w-10 h-10 flex-shrink-0' : 'w-14 h-14'} rounded-full bg-green-500 flex items-center justify-center text-white font-bold shadow-sm ${compact ? 'text-xl' : 'text-3xl'}`}
-          >
-            ✓
-          </motion.div>
-        ) : (
-          <motion.div
-            key="empty"
-            className={`${compact ? 'w-10 h-10 flex-shrink-0' : 'w-14 h-14'} rounded-full border-2 border-gray-200 bg-white`}
-          />
-        )}
-      </AnimatePresence>
+      {compact ? (
+        <>
+          {/* Label */}
+          <div className="flex-1 text-left">
+            <span className="font-semibold tracking-tight text-base text-gray-900">
+              {task.label}
+            </span>
+          </div>
+          {/* Check indicator */}
+          <AnimatePresence mode="wait">
+            {completed ? (
+              <motion.div
+                key="check"
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                exit={{ scale: 0 }}
+                className="w-10 h-10 flex-shrink-0 rounded-full bg-green-500 flex items-center justify-center text-white font-bold shadow-sm text-xl"
+              >
+                ✓
+              </motion.div>
+            ) : (
+              <motion.div
+                key="empty"
+                className="w-10 h-10 flex-shrink-0 rounded-full border-2 border-gray-200 bg-white"
+              />
+            )}
+          </AnimatePresence>
+        </>
+      ) : (
+        /* Card mode: check left, label right */
+        <div className="flex items-center gap-3 px-4 py-3">
+          <AnimatePresence mode="wait">
+            {completed ? (
+              <motion.div
+                key="check"
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                exit={{ scale: 0 }}
+                className="w-8 h-8 flex-shrink-0 rounded-full bg-green-500 flex items-center justify-center text-white font-bold shadow-sm text-base"
+              >
+                ✓
+              </motion.div>
+            ) : (
+              <motion.div
+                key="empty"
+                className="w-8 h-8 flex-shrink-0 rounded-full border-2 border-gray-200 bg-white"
+              />
+            )}
+          </AnimatePresence>
+          <span className="flex-1 font-semibold tracking-tight text-sm text-gray-900">
+            {task.label}
+          </span>
+        </div>
+      )}
     </motion.button>
   )
 }

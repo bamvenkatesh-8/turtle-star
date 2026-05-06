@@ -228,14 +228,12 @@ export default function RoutineView({
           </div>
         </div>
 
-        {/* Kid identity — centered, mobile only */}
-        <div className="lg:hidden flex flex-col items-center pt-5 pb-2">
-          <div className="flex items-center gap-3">
-            <span className="text-5xl">{kid.avatar}</span>
-            <span className="font-bold text-2xl text-gray-900 tracking-tight">{kid.name}</span>
-          </div>
+        {/* Kid identity — compact bar, mobile only */}
+        <div className="lg:hidden flex items-center gap-2 px-4 py-2 bg-white border-b border-gray-100">
+          <span className="text-2xl">{kid.avatar}</span>
+          <span className="font-semibold text-base text-gray-900 tracking-tight">{kid.name}</span>
           {kid.totalStars > 0 && (
-            <span className="text-sm text-gray-400 mt-1">⭐ {kid.totalStars}</span>
+            <span className="ml-auto text-sm text-gray-500">⭐ {kid.totalStars}</span>
           )}
         </div>
 
