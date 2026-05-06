@@ -1,13 +1,32 @@
 import { motion, AnimatePresence } from 'framer-motion'
+import confetti from 'canvas-confetti'
 import TaskImage from './TaskImage'
+
+function fireConfetti() {
+  confetti({
+    particleCount: 40,
+    spread: 80,
+    origin: { y: 0.5 },
+    colors: ['#007AFF', '#FF9F0A', '#34C759', '#FF3B30', '#AF52DE', '#FFD60A'],
+    scalar: 0.8,
+    gravity: 1.2,
+    drift: 0,
+    ticks: 90,
+  })
+}
 
 export default function TaskCard({ task, completed, onToggle, theme, compact = false }) {
   const accentColor = theme?.accentColor || '#007AFF'
 
+  function handleToggle() {
+    if (!completed) fireConfetti()
+    onToggle(task.id)
+  }
+
   return (
     <motion.button
       whileTap={{ scale: 0.98 }}
-      onClick={() => onToggle(task.id)}
+      onClick={handleToggle}
       className={`w-full flex ${compact ? 'flex-row items-center gap-3 p-3' : 'flex-col items-center gap-4 p-6'}
         rounded-2xl border transition-all duration-150 select-none
         focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2
