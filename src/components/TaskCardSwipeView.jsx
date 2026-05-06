@@ -1,76 +1,71 @@
-import { useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { useState, useRef } from 'react'
 import TaskCard from './TaskCard'
 
 export default function TaskCardSwipeView({ tasks, completedIds, onToggle, theme }) {
   const [currentIndex, setCurrentIndex] = useState(0)
-  const [direction, setDirection] = useState(0)
-
-  const task = tasks[currentIndex]
   const accentColor = theme?.accentColor || '#007AFF'
+  const dragStart = useRef(null)
 
-  function goNext() {
-    if (currentIndex < tasks.length - 1) {
-      setDirection(1)
-      setCurrentIndex((i) => i + 1)
-    }
+  function goTo(i) {
+    if (i >= 0 && i < tasks.length) setCurrentIndex(i)
   }
 
-  function goPrev() {
-    if (currentIndex > 0) {
-      setDirection(-1)
-      setCurrentIndex((i) => i - 1)
-    }
+  // Pointer-based swipe
+  function onPointerDown(e) {
+    dragStart.current = e.clientX
+  }
+  function onPointerUp(e) {
+    if (dragStart.current === null) return
+    const delta = dragStart.current - e.clientX
+    if (delta > 60) goTo(currentIndex + 1)
+    else if (delta < -60) goTo(currentIndex - 1)
+    dragStart.current = null
   }
 
-  function handleDragEnd(_, info) {
-    if (info.offset.x < -60) goNext()
-    else if (info.offset.x > 60) goPrev()
-  }
-
-  if (!task) return null
+  if (!tasks.length) return null
 
   return (
     <div className="flex-1 flex flex-col px-4 pt-4 pb-2 overflow-hidden bg-gray-50">
-      {/* Card area */}
-      <div className="flex-1 flex flex-col items-center justify-center relative overflow-hidden">
-        <AnimatePresence mode="wait" initial={false}>
-          <motion.div
-            key={task.id}
-            initial={{ x: direction * 300, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            exit={{ x: direction * -300, opacity: 0 }}
-            transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-            drag="x"
-            dragConstraints={{ left: 0, right: 0 }}
-            onDragEnd={handleDragEnd}
-            className="w-full max-w-sm lg:max-w-lg cursor-grab active:cursor-grabbing"
-          >
-            <TaskCard
-              task={task}
-              completed={completedIds.includes(task.id)}
-              onToggle={onToggle}
-              theme={theme}
-            />
-          </motion.div>
-        </AnimatePresence>
+      <div className="flex-1 flex flex-col items-center justify-center">
 
-        {/* Nav arrows */}
+        {/* CSS carousel — all cards in a flex row, container clips overflow */}
+        <div
+          className="w-full max-w-sm lg:max-w-lg overflow-hidden rounded-2xl select-none cursor-grab active:cursor-grabbing"
+          onPointerDown={onPointerDown}
+          onPointerUp={onPointerUp}
+        >
+          <div
+            className="flex transition-transform duration-300 ease-in-out"
+            style={{ transform: `translateX(-${currentIndex * 100}%)` }}
+          >
+            {tasks.map((task) => (
+              <div key={task.id} className="w-full flex-shrink-0">
+                <TaskCard
+                  task={task}
+                  completed={completedIds.includes(task.id)}
+                  onToggle={onToggle}
+                  theme={theme}
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Nav arrows + dots */}
         <div className="flex items-center justify-between w-full max-w-sm lg:max-w-lg mt-4">
           <button
-            onClick={goPrev}
+            onClick={() => goTo(currentIndex - 1)}
             disabled={currentIndex === 0}
             className="w-12 h-12 rounded-full bg-white shadow-md text-gray-600 text-2xl disabled:opacity-30 hover:bg-gray-50 active:scale-95 transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-300"
           >
             ‹
           </button>
 
-          {/* Dot indicators */}
-          <div className="flex gap-2">
+          <div className="flex gap-2 items-center">
             {tasks.map((t, i) => (
               <button
                 key={i}
-                onClick={() => { setDirection(i > currentIndex ? 1 : -1); setCurrentIndex(i) }}
+                onClick={() => goTo(i)}
                 className="rounded-full transition-all duration-200"
                 style={{
                   width: i === currentIndex ? 24 : 12,
@@ -86,7 +81,7 @@ export default function TaskCardSwipeView({ tasks, completedIds, onToggle, theme
           </div>
 
           <button
-            onClick={goNext}
+            onClick={() => goTo(currentIndex + 1)}
             disabled={currentIndex === tasks.length - 1}
             className="w-12 h-12 rounded-full bg-white shadow-md text-gray-600 text-2xl disabled:opacity-30 hover:bg-gray-50 active:scale-95 transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-300"
           >
@@ -94,7 +89,6 @@ export default function TaskCardSwipeView({ tasks, completedIds, onToggle, theme
           </button>
         </div>
 
-        {/* Swipe hint */}
         <p className="text-gray-400 text-xs mt-2">Swipe left or right to navigate</p>
       </div>
     </div>

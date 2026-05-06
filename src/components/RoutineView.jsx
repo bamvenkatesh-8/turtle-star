@@ -57,7 +57,7 @@ export default function RoutineView({
         <Header
           onBack={onBack}
           onHome={onHome}
-          title={`${kid.avatar} ${kid.name}`}
+          title=""
           theme={theme}
           rightSlot={
             <div className="flex items-center gap-1">
@@ -79,6 +79,14 @@ export default function RoutineView({
             </div>
           }
         />
+        {/* Kid name row — below header, uncluttered */}
+        <div className="bg-white border-b border-gray-100 px-4 py-2.5 flex items-center gap-2.5">
+          <span className="text-2xl">{kid.avatar}</span>
+          <span className="font-semibold text-gray-900 text-base tracking-tight">{kid.name}</span>
+          {kid.totalStars > 0 && (
+            <span className="ml-auto text-sm text-gray-400">⭐ {kid.totalStars}</span>
+          )}
+        </div>
       </div>
 
       {/* DESKTOP SIDEBAR */}
